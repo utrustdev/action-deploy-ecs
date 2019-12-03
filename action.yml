@@ -1,0 +1,32 @@
+name: Deploy to ECS
+description: Applies a given task definition to a running service
+
+inputs:
+  task-definition:
+    description: 'Task Definition file'
+    required: true
+  branch:
+    description: 'The branch to deploy (to deduce the environment)'
+  service:
+    description: 'Service to deploy'
+    required: true
+  aws_ids:
+    description: 'CSV-style list of environment names and corresponding AWS Account IDs'
+    required: true
+  aws_role:
+    description: 'AWS role to use'
+    required: true
+  aws_region:
+    description: 'AWS region to use'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.task-definition }}
+    - ${{ inputs.branch }}
+    - ${{ inputs.service }}
+    - ${{ inputs.aws_ids }}
+    - ${{ inputs.aws_role }}
+    - ${{ inputs.aws_region }}
