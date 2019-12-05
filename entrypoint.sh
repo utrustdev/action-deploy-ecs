@@ -17,6 +17,6 @@ case "${environment}-${cluster}" in
     cluster_name="${environment}-${cluster}"
 esac
 
-./aws_config.sh $aws_ids $aws_role $aws_region
+/aws_config.sh $aws_ids $aws_role $aws_region
 
-./ecs_update.sh $service $environment $cluster_name $task_definition
+/ecs_update.sh $service $environment $cluster_name $task_definition
