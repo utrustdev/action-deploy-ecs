@@ -29,6 +29,6 @@ source_profile = default
 EOL
 }
 
-while read -r line; do
+echo $ids | while read -r line; do
   add_profile $line $role $region
-done <<< "$ids"
+done
