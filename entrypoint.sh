@@ -1,39 +1,21 @@
 #!/bin/sh -ue
 
 task_definition=$1
-branch=$2
-service=$3
-aws_ids=$4
-aws_role=$5
+service=$2
+environment=$3
+aws_role=$4
+aws_ids=$5
 aws_region=$6
 
-/aws_config.sh $aws_ids
-
-case ${branch/refs\/head\//} in
-  master)
-    env="development"
-    cluster="dev-webservices"
+case "${environment}-${cluster}" in
+  "development-webservices")
+    cluster_name="dev-webservices"
     ;;
 
-  mp/last-build-result)
-    env="development"
-    cluster="dev-webservices"
-    ;;
-
-  staging)
-    env="staging"
-    cluster="staging-webservices"
-    ;;
-
-  sandbox)
-    env="sandbox"
-    cluster="sandbox-webservices"
-    ;;
-
-  production)
-    env="production"
-    cluster="production-webservices"
-    ;;
+  *)
+    cluster_name="${environment}-${cluster}"
 esac
 
-./ecs_update.sh $service $env $cluster $task_definition
+/aws_config.sh $aws_ids $aws_role $aws_region
+
+./ecs_update.sh $service $environment $cluster_name $task_definition

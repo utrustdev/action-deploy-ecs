@@ -5,10 +5,6 @@ environment=$2
 cluster=$3
 task_definition=$4
 
-echo $service $environment $task_definition
-
-exit 0
-
 JQ="jq --raw-output --exit-status"
 
 #
