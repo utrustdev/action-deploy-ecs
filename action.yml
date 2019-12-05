@@ -8,6 +8,9 @@ inputs:
   service:
     description: 'Service to deploy'
     required: true
+  cluster:
+    description: 'The cluster where the service is located'
+    required: true
   environment:
     description: 'The environment to deploy (to deduce the environment)'
   aws_role:
@@ -26,6 +29,7 @@ runs:
   args:
     - ${{ inputs.task-definition }}
     - ${{ inputs.service }}
+    - ${{ inputs.cluster }}
     - ${{ inputs.environment }}
     - ${{ inputs.aws_role }}
     - ${{ inputs.aws_ids }}

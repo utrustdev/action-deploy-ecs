@@ -2,10 +2,11 @@
 
 task_definition=$1
 service=$2
-environment=$3
-aws_role=$4
-aws_ids=$5
-aws_region=$6
+cluster=$3
+environment=$4
+aws_role=$5
+aws_ids=$6
+aws_region=$7
 
 case "${environment}-${cluster}" in
   "development-webservices")
