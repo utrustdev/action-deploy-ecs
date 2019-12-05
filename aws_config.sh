@@ -19,8 +19,7 @@ function add_profile() {
   region=$3
 
   echo $1
-  # cat >> ~/.aws/config << EOL
-  cat >> test << EOL
+  cat >> ~/.aws/config << EOL
 
 [profile $name]
 role_arn = arn:aws:iam::$aws_id:role/$role
