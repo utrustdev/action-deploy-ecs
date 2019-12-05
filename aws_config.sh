@@ -5,8 +5,7 @@ role=$2
 region=$3
 
 mkdir -p ~/.aws
-# cat > ~/.aws.config << EOL
-cat > test << EOL
+cat > ~/.aws/config << EOL
 [default]
 aws_access_key_id = ${AWS_ACCESS_KEY_ID}
 aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
@@ -18,7 +17,7 @@ function add_profile() {
   role=$2
   region=$3
 
-  echo $1
+  echo configuring $name $aws_id
   cat >> ~/.aws/config << EOL
 
 [profile $name]
@@ -29,5 +28,15 @@ EOL
 }
 
 echo $ids | while read -r line; do
-  add_profile $line $role $region
+  name=$(echo $line | cut -d',' -f 1)
+  aws_id=$(echo $line | cut -d',' -f 2)
+
+  echo configuring $name $aws_id
+  cat >> ~/.aws/config << EOL
+
+[profile $name]
+role_arn = arn:aws:iam::$aws_id:role/$role
+region = $region
+source_profile = default
+EOL
 done

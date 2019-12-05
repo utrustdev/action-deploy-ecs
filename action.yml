@@ -32,5 +32,5 @@ runs:
     - ${{ inputs.cluster }}
     - ${{ inputs.environment }}
     - ${{ inputs.aws_role }}
-    - ${{ inputs.aws_ids }}
     - ${{ inputs.aws_region }}
+    - '${{ inputs.aws_ids }}'

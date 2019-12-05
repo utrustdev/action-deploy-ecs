@@ -17,6 +17,8 @@ case "${environment}-${cluster}" in
     cluster_name="${environment}-${cluster}"
 esac
 
+echo "running aws_config"
 /aws_config.sh $aws_ids $aws_role $aws_region
 
+echo "ecs_update"
 /ecs_update.sh $service $environment $cluster_name $task_definition
