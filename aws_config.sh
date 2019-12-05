@@ -29,6 +29,6 @@ source_profile = default
 EOL
 }
 
-export -f add_profile
-
-echo -e $ids | xargs -n 1 -I {} bash -c "add_profile \"{}\" $role $region"
+while read -r line; do
+  add_profile $line $role $region
+done <<< "$ids"
