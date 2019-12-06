@@ -27,6 +27,7 @@ source_profile = default
 EOL
 }
 
+echo "$ids"
 echo $ids | while read -r line; do
   name=$(echo $line | cut -d',' -f 1)
   aws_id=$(echo $line | cut -d',' -f 2)

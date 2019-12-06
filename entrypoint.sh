@@ -5,8 +5,8 @@ service=$2
 cluster=$3
 environment=$4
 aws_role=$5
-aws_ids=$6
-aws_region=$7
+aws_region=$6
+aws_ids=$7
 
 case "${environment}-${cluster}" in
   "development-webservices")
