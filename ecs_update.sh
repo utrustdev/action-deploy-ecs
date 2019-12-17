@@ -15,7 +15,7 @@ revision=$(aws ecs register-task-definition \
   --profile $environment | \
   $JQ '.taskDefinition.taskDefinitionArn')
 
-if [ $revision == "null" ]; then
+if [[ "$revision" == "null" ]]; then
   echo "failed to register task definition" >&2
   exit 1
 fi
@@ -32,7 +32,7 @@ result=$(aws ecs update-service \
   --profile $environment | \
   $JQ '.service.taskDefinition')
 
-if [[ $result != $revision ]]; then
+if [[ "$result" != "$revision" ]]; then
   echo "error updating service" >&2
   exit 1
 else
