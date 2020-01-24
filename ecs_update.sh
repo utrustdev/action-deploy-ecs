@@ -15,7 +15,9 @@ revision=$(aws ecs register-task-definition \
   --profile $environment | \
   $JQ '.taskDefinition.taskDefinitionArn')
 
-if [[ "$revision" == "null" ]]; then
+exit_code=$?
+
+if [[ "$exit_code" != 0 ]] || [[ "$revision" == "" ]] || [[ $revision" == "null" ]]; then
   echo "failed to register task definition" >&2
   exit 1
 fi
