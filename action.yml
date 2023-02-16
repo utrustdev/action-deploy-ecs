@@ -3,34 +3,34 @@ description: Applies a given task definition to a running service
 
 inputs:
   task-definition:
-    description: 'Task Definition file'
+    description: "Task Definition file"
     required: true
   service:
-    description: 'Service to deploy'
+    description: "Service to deploy"
     required: true
   cluster:
-    description: 'The cluster where the service is located'
+    description: "The cluster where the service is located"
     required: true
-  environment:
-    description: 'The environment to deploy (to deduce the environment)'
   aws_role:
-    description: 'AWS role to use'
-    required: true
-  aws_ids:
-    description: 'CSV-style list of environment names and corresponding AWS Account IDs'
+    description: "AWS role to use"
     required: true
   aws_region:
-    description: 'AWS region to use'
+    description: "AWS region to use"
     required: true
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.task-definition }}
-    - ${{ inputs.service }}
-    - ${{ inputs.cluster }}
-    - ${{ inputs.environment }}
-    - ${{ inputs.aws_role }}
-    - ${{ inputs.aws_region }}
-    - '${{ inputs.aws_ids }}'
+  using: "composite"
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ inputs.aws_role }}
+        aws-region: ${{ inputs.aws_region }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ inputs.task-definition }}
+        service: ${{ inputs.service }}
+        cluster: ${{ inputs.cluster }}
+        wait-for-service-stability: true
