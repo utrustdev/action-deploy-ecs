@@ -21,16 +21,22 @@ inputs:
     description: "Role duration in seconds (default: 1 hours)"
     required: false
     default: "3600"
+  wait-for-service-stability:
+    description: "Whether to wait for the ECS service to reach stable state after deploying the new task definition. Valid value is true. Will default to not waiting."
+    required: false
+    default: "false"
+
 
 runs:
   using: "composite"
   steps:
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         role-to-assume: ${{ inputs.aws_role }}
         aws-region: ${{ inputs.aws_region }}
         role-duration-seconds: ${{ inputs.role-duration-seconds }}
+        role-skip-session-tagging: true
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -38,4 +44,4 @@ runs:
         task-definition: ${{ inputs.task-definition }}
         service: ${{ inputs.service }}
         cluster: ${{ inputs.cluster }}
-        wait-for-service-stability: true
+        wait-for-service-stability: ${{ inputs.wait-for-service-stability }}
