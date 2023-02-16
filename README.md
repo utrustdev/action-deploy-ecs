@@ -24,4 +24,5 @@ jobs:
           cluster: <cluster>
           aws_role: arn:aws:iam::111111111111:role/my-github-actions-role-test
           aws_region: ${{ secrets.AWS_REGION }}
+          role-duration-seconds: <value> # Optional and will default to 1 hour
 ```

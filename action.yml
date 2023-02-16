@@ -17,6 +17,10 @@ inputs:
   aws_region:
     description: "AWS region to use"
     required: true
+  role-duration-seconds:
+    description: "Role duration in seconds (default: 1 hours)"
+    required: false
+    default: "3600"
 
 runs:
   using: "composite"
@@ -26,6 +30,7 @@ runs:
       with:
         role-to-assume: ${{ inputs.aws_role }}
         aws-region: ${{ inputs.aws_region }}
+        role-duration-seconds: ${{ inputs.role-duration-seconds }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
