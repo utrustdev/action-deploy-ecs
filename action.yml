@@ -72,11 +72,14 @@ runs:
         role-skip-session-tagging	: true
         role-duration-seconds: "${{ inputs.role-duration-seconds }}"
 
-
-    - name: get caller identity
+    - name: Test AWS CLI directly
       shell: bash
       run: |
+        export AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
+        export AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
+        export AWS_REGION="${{ inputs.aws_region }}"
         aws sts get-caller-identity
+
 
     - name: Describe ECS service
       shell: bash
