@@ -11,9 +11,12 @@ inputs:
   environment:
     description: "Environment to deploy to"
     required: true
-  # cluster:
-  #   description: "The cluster where the service is located"
-  #   required: false
+  aws_access_key_id:
+    required: true
+    description: AWS access key
+  aws_secret_access_key:
+    required: true
+    description: AWS secret key
   aws_role:
     description: "AWS role to use"
     required: true
@@ -63,17 +66,18 @@ runs:
         echo "aws_account=${aws_account}" >> "$GITHUB_OUTPUT"
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      id: aws
+      uses: aws-actions/configure-aws-credentials@v4.1.0
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-access-key-id: ${{ inputs.aws_access_key_id }}
+        aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
         aws-region: ${{ inputs.aws_region }}
-        role-to-assume: "arn:aws:iam::${{ steps.names.outputs.aws_account  }}:role/{{ inputs.aws_role }}"
+        role-to-assume: "arn:aws:iam::${{ steps.names.outputs.aws_account  }}:role/${{ inputs.aws_role }}"
         role-skip-session-tagging	: true
-        role-duration-seconds: "{{ inputs.role-duration-seconds }}"
+        role-duration-seconds: "${{ inputs.role-duration-seconds }}"
 
     - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2.3.1
       with:
         task-definition: ${{ inputs.task-definition }}
         service: ${{ inputs.service }}

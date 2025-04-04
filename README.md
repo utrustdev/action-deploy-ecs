@@ -1,6 +1,7 @@
 # Github Action - Deploy to ECS
 
-Applies a given task definition to a running service
+Applies a given task definition to a running service, performing the aws authorizatoin via aws-actions.
+It will also compute the ECS cluster and account based on the environment specified as input.
 
 ## Usage
 
@@ -8,22 +9,17 @@ Applies a given task definition to a running service
 jobs:
   deploy:
     steps:
-      - name: Configure AWS credentials
-        id: aws_credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: aws-region-1
-
       - name: Deploy to ECS
-        uses: utrustdev/actions-deploy-ecs@master
+        uses: utrustdev/action-deploy-ecs@aws-actions-fix2
         with:
           task-definition: ${{ steps.task_def.outputs.file }}
           service: <service>
-          cluster: <cluster>
-          aws_role: arn:aws:iam::111111111111:role/my-github-actions-role-test
-          aws_region: ${{ secrets.AWS_REGION }}
-          role-duration-seconds: <value> # Optional. Will default to 1 hour
-          wait-for-service-stability: <boolean> # Optional. Default to false
+          environment: <environment>
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_role: <role-to-assume-in-the-deployment-account>
+          aws_region: eu-central-1
+          wait-for-service-stability: false # default to false
+          force-new-deployment: true # will default to false
+          role-duration-seconds: 1800 # default to 3600
 ```
