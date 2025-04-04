@@ -69,6 +69,7 @@ runs:
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ inputs.aws_region }}
         role-to-assume: "arn:aws:iam::${{ steps.names.outputs.aws_account  }}:role/${{ inputs.aws_role }}"
+        role-session-name: "github"
         role-skip-session-tagging	: true
         role-duration-seconds: "${{ inputs.role-duration-seconds }}"
 
@@ -78,28 +79,30 @@ runs:
         export AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
         export AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
         export AWS_REGION="${{ inputs.aws_region }}"
-        aws sts get-caller-identity
+        # aws sts get-caller-identity
+        aws s3 ls --region eu-central-1
 
 
-    - name: Describe ECS service
-      shell: bash
-      run: |
-        echo "Describing ECS service: ${{ inputs.service }} in cluster: ${{ steps.names.outputs.cluster }}"
-        aws ecs describe-services \
-          --cluster "${{ steps.names.outputs.cluster }}" \
-          --services "${{ inputs.service }}" \
-          --output json | jq '.services[0] | {serviceName, status, runningCount, pendingCount, desiredCount, taskDefinition}'
 
-        # Check if command was successful
-        if [ $? -eq 0 ]; then
-          echo "✅ Successfully described ECS service. Credentials and permissions are working."
-        else
-          echo "❌ Failed to describe ECS service. Please check credentials and permissions."
-          # This doesn't fail the workflow, but provides clear error information
-        fi
+    # - name: Describe ECS service
+    #   shell: bash
+    #   run: |
+    #     echo "Describing ECS service: ${{ inputs.service }} in cluster: ${{ steps.names.outputs.cluster }}"
+    #     aws ecs describe-services \
+    #       --cluster "${{ steps.names.outputs.cluster }}" \
+    #       --services "${{ inputs.service }}" \
+    #       --output json | jq '.services[0] | {serviceName, status, runningCount, pendingCount, desiredCount, taskDefinition}'
+
+    #     # Check if command was successful
+    #     if [ $? -eq 0 ]; then
+    #       echo "✅ Successfully described ECS service. Credentials and permissions are working."
+    #     else
+    #       echo "❌ Failed to describe ECS service. Please check credentials and permissions."
+    #       # This doesn't fail the workflow, but provides clear error information
+    #     fi
 
     - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2.3.1
       with:
         task-definition: ${{ inputs.task-definition }}
         service: ${{ inputs.service }}
