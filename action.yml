@@ -72,7 +72,7 @@ runs:
         role-session-name: "github"
         role-skip-session-tagging	: true
         role-duration-seconds: "${{ inputs.role-duration-seconds }}"
-        mask-aws-account-id: no
+        mask-aws-account-id: true
 
 
     # - name: Test AWS CLI directly
@@ -87,32 +87,37 @@ runs:
     - name: Verify assumed role credentials
       shell: bash
       run: |
-        # Make 100% sure original credentials are cleared from environment
-        unset AWS_ACCESS_KEY_ID
-        unset AWS_SECRET_ACCESS_KEY
+        # Don't export the original credentials again
+        # Let the credential provider chain use what configure-aws-credentials set up
 
         echo "=== Verifying assumed role identity ==="
         aws sts get-caller-identity
 
-
-    - name: Describe ECS service
-      shell: bash
-      run: |
+        # Make 100% sure original credentials are cleared from environment
         unset AWS_ACCESS_KEY_ID
         unset AWS_SECRET_ACCESS_KEY
-        echo "Describing ECS service: ${{ inputs.service }} in cluster: ${{ steps.names.outputs.cluster }}"
-        aws ecs describe-services \
-          --cluster "${{ steps.names.outputs.cluster }}" \
-          --services "${{ inputs.service }}" \
-          --output json | jq '.services[0] | {serviceName, status, runningCount, pendingCount, desiredCount, taskDefinition}'
 
-        # Check if command was successful
-        if [ $? -eq 0 ]; then
-          echo "✅ Successfully described ECS service. Credentials and permissions are working."
-        else
-          echo "❌ Failed to describe ECS service. Please check credentials and permissions."
-          # This doesn't fail the workflow, but provides clear error information
-        fi
+        # Now try a test command with assumed role
+        aws sts get-caller-identity
+
+    # - name: Describe ECS service
+    #   shell: bash
+    #   run: |
+    #     unset AWS_ACCESS_KEY_ID
+    #     unset AWS_SECRET_ACCESS_KEY
+    #     echo "Describing ECS service: ${{ inputs.service }} in cluster: ${{ steps.names.outputs.cluster }}"
+    #     aws ecs describe-services \
+    #       --cluster "${{ steps.names.outputs.cluster }}" \
+    #       --services "${{ inputs.service }}" \
+    #       --output json | jq '.services[0] | {serviceName, status, runningCount, pendingCount, desiredCount, taskDefinition}'
+
+    #     # Check if command was successful
+    #     if [ $? -eq 0 ]; then
+    #       echo "✅ Successfully described ECS service. Credentials and permissions are working."
+    #     else
+    #       echo "❌ Failed to describe ECS service. Please check credentials and permissions."
+    #       # This doesn't fail the workflow, but provides clear error information
+    #     fi
 
     # - name: Deploy Amazon ECS task definition
     #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2.3.1
