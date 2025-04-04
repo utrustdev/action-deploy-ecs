@@ -113,31 +113,24 @@ runs:
 
         aws sts get-caller-identity
 
-        # Make 100% sure original credentials are cleared from environment
+    - name: Describe ECS service
+      shell: bash
+      run: |
         unset AWS_ACCESS_KEY_ID
         unset AWS_SECRET_ACCESS_KEY
+        echo "Describing ECS service: ${{ inputs.service }} in cluster: ${{ steps.names.outputs.cluster }}"
+        aws ecs describe-services \
+          --cluster "${{ steps.names.outputs.cluster }}" \
+          --services "${{ inputs.service }}" \
+          --output json | jq '.services[0] | {serviceName, status, runningCount, pendingCount, desiredCount, taskDefinition}'
 
-        # Now try a test command with assumed role
-        aws sts get-caller-identity
-
-    # - name: Describe ECS service
-    #   shell: bash
-    #   run: |
-    #     unset AWS_ACCESS_KEY_ID
-    #     unset AWS_SECRET_ACCESS_KEY
-    #     echo "Describing ECS service: ${{ inputs.service }} in cluster: ${{ steps.names.outputs.cluster }}"
-    #     aws ecs describe-services \
-    #       --cluster "${{ steps.names.outputs.cluster }}" \
-    #       --services "${{ inputs.service }}" \
-    #       --output json | jq '.services[0] | {serviceName, status, runningCount, pendingCount, desiredCount, taskDefinition}'
-
-    #     # Check if command was successful
-    #     if [ $? -eq 0 ]; then
-    #       echo "✅ Successfully described ECS service. Credentials and permissions are working."
-    #     else
-    #       echo "❌ Failed to describe ECS service. Please check credentials and permissions."
-    #       # This doesn't fail the workflow, but provides clear error information
-    #     fi
+        # Check if command was successful
+        if [ $? -eq 0 ]; then
+          echo "✅ Successfully described ECS service. Credentials and permissions are working."
+        else
+          echo "❌ Failed to describe ECS service. Please check credentials and permissions."
+          # This doesn't fail the workflow, but provides clear error information
+        fi
 
     # - name: Deploy Amazon ECS task definition
     #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2.3.1
