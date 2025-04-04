@@ -98,6 +98,8 @@ runs:
     - name: Describe ECS service
       shell: bash
       run: |
+        unset AWS_ACCESS_KEY_ID
+        unset AWS_SECRET_ACCESS_KEY
         echo "Describing ECS service: ${{ inputs.service }} in cluster: ${{ steps.names.outputs.cluster }}"
         aws ecs describe-services \
           --cluster "${{ steps.names.outputs.cluster }}" \
