@@ -61,6 +61,10 @@ runs:
             cluster="production-webservices"
             aws_account="950754345196"
             ;;
+          dr)
+            cluster="dr-webservices"
+            aws_account="950754345196"
+            ;;
         esac
         echo "cluster=${cluster}" >> $GITHUB_OUTPUT
         echo "aws_account=${aws_account}" >> "$GITHUB_OUTPUT"
