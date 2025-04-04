@@ -62,16 +62,16 @@ runs:
         echo "cluster=${cluster}" >> $GITHUB_OUTPUT
         echo "aws_account=${aws_account}" >> "$GITHUB_OUTPUT"
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4.1.0
-      with:
-        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ inputs.aws_region }}
-        role-to-assume: "arn:aws:iam::${{ steps.names.outputs.aws_account  }}:role/${{ inputs.aws_role }}"
-        role-session-name: "github"
-        role-skip-session-tagging	: true
-        role-duration-seconds: "${{ inputs.role-duration-seconds }}"
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v4.1.0
+    #   with:
+    #     aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: ${{ inputs.aws_region }}
+    #     role-to-assume: "arn:aws:iam::${{ steps.names.outputs.aws_account  }}:role/${{ inputs.aws_role }}"
+    #     role-session-name: "github"
+    #     role-skip-session-tagging	: true
+    #     role-duration-seconds: "${{ inputs.role-duration-seconds }}"
 
     - name: Test AWS CLI directly
       shell: bash
@@ -79,8 +79,8 @@ runs:
         export AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
         export AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
         export AWS_REGION="${{ inputs.aws_region }}"
-        # aws sts get-caller-identity
-        aws s3 ls --region eu-central-1
+        aws sts get-caller-identity
+
 
 
 
