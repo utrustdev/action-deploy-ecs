@@ -63,6 +63,7 @@ runs:
         echo "aws_account=${aws_account}" >> "$GITHUB_OUTPUT"
 
     - name: Configure AWS credentials
+      id: aws
       uses: aws-actions/configure-aws-credentials@v4.1.0
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
@@ -89,6 +90,12 @@ runs:
       run: |
         # Don't export the original credentials again
         # Let the credential provider chain use what configure-aws-credentials set up
+
+
+        export AWS_ACCESS_KEY_ID="${{ steps.aws.outputs.access_key }}"
+        export AWS_SECRET_ACCESS_KEY="${{ steps.aws.outputs.secret_key }}"
+        export AWS_SESSION_TOKEN="${{ steps.aws.outputs.session_token }}"
+        export AWS_REGION="${{ inputs.aws_region }}"
 
         echo "=== Verifying assumed role identity ==="
         aws sts get-caller-identity
