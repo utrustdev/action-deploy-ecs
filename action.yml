@@ -88,16 +88,14 @@ runs:
     - name: Verify assumed role credentials
       shell: bash
       run: |
-        # Don't export the original credentials again
-        # Let the credential provider chain use what configure-aws-credentials set up
+        # export AWS_ACCESS_KEY_ID="${{ steps.aws.outputs.access_key }}"
+        # export AWS_SECRET_ACCESS_KEY="${{ steps.aws.outputs.secret_key }}"
+        # export AWS_SESSION_TOKEN="${{ steps.aws.outputs.session_token }}"
+        # export AWS_REGION="${{ inputs.aws_region }}"
 
-
-        export AWS_ACCESS_KEY_ID="${{ steps.aws.outputs.access_key }}"
-        export AWS_SECRET_ACCESS_KEY="${{ steps.aws.outputs.secret_key }}"
-        export AWS_SESSION_TOKEN="${{ steps.aws.outputs.session_token }}"
-        export AWS_REGION="${{ inputs.aws_region }}"
-
+        aws configure list
         echo "=== Verifying assumed role identity ==="
+
         aws sts get-caller-identity
 
         # Make 100% sure original credentials are cleared from environment
