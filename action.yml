@@ -14,6 +14,15 @@ inputs:
   # cluster:
   #   description: "The cluster where the service is located"
   #   required: false
+
+  aws_access_key_id:
+    required: true
+    description: AWS access key
+  aws_secret_access_key:
+    required: true
+    description: AWS secret key
+
+
   aws_role:
     description: "AWS role to use"
     required: true
@@ -66,8 +75,10 @@ runs:
       id: aws
       uses: aws-actions/configure-aws-credentials@v4.1.0
       with:
-        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        # aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        # aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-access-key-id: ${{ inputs.aws_access_key_id }}
+        aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
         aws-region: ${{ inputs.aws_region }}
         role-to-assume: "arn:aws:iam::${{ steps.names.outputs.aws_account  }}:role/${{ inputs.aws_role }}"
         role-session-name: "github"
