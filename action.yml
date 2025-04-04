@@ -69,44 +69,12 @@ runs:
       id: aws
       uses: aws-actions/configure-aws-credentials@v4.1.0
       with:
-        # aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-        # aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
         aws-access-key-id: ${{ inputs.aws_access_key_id }}
         aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
         aws-region: ${{ inputs.aws_region }}
         role-to-assume: "arn:aws:iam::${{ steps.names.outputs.aws_account  }}:role/${{ inputs.aws_role }}"
-        # role-session-name: "github"
         role-skip-session-tagging	: true
         role-duration-seconds: "${{ inputs.role-duration-seconds }}"
-        # mask-aws-account-id: false
-
-
-    # - name: Test AWS CLI directly
-    #   shell: bash
-    #   run: |
-    #     export AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
-    #     export AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
-    #     export AWS_REGION="${{ inputs.aws_region }}"
-    #     aws sts get-caller-identity
-
-
-    # - name: Verify assumed role credentials
-    #   shell: bash
-    #   run: |
-    #     # export AWS_ACCESS_KEY_ID="${{ steps.aws.outputs.access_key }}"
-    #     # export AWS_SECRET_ACCESS_KEY="${{ steps.aws.outputs.secret_key }}"
-    #     # export AWS_SESSION_TOKEN="${{ steps.aws.outputs.session_token }}"
-    #     # export AWS_REGION="${{ inputs.aws_region }}"
-
-    #     echo "=== env ==="
-    #     env | grep AWS
-    #     echo "=== config ==="
-
-    #     aws configure list
-    #     echo "=== Verifying assumed role identity ==="
-
-    #     aws sts get-caller-identity
-
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v2.3.1
