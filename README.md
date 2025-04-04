@@ -10,7 +10,7 @@ jobs:
   deploy:
     steps:
       - name: Deploy to ECS
-        uses: utrustdev/action-deploy-ecs@aws-actions-fix2
+        uses: utrustdev/action-deploy-ecs
         with:
           task-definition: ${{ steps.task_def.outputs.file }}
           service: <service>
