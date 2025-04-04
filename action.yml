@@ -72,16 +72,27 @@ runs:
         role-session-name: "github"
         role-skip-session-tagging	: true
         role-duration-seconds: "${{ inputs.role-duration-seconds }}"
+        # mask-aws-account-id: false
 
-    - name: Test AWS CLI directly
+
+    # - name: Test AWS CLI directly
+    #   shell: bash
+    #   run: |
+    #     export AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
+    #     export AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
+    #     export AWS_REGION="${{ inputs.aws_region }}"
+    #     aws sts get-caller-identity
+
+
+    - name: Verify assumed role credentials
       shell: bash
       run: |
-        export AWS_ACCESS_KEY_ID="${{ env.AWS_ACCESS_KEY_ID }}"
-        export AWS_SECRET_ACCESS_KEY="${{ env.AWS_SECRET_ACCESS_KEY }}"
-        export AWS_REGION="${{ inputs.aws_region }}"
+        # Make 100% sure original credentials are cleared from environment
+        unset AWS_ACCESS_KEY_ID
+        unset AWS_SECRET_ACCESS_KEY
+
+        echo "=== Verifying assumed role identity ==="
         aws sts get-caller-identity
-
-
 
 
     # - name: Describe ECS service
