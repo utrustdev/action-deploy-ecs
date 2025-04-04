@@ -93,6 +93,10 @@ runs:
         # export AWS_SESSION_TOKEN="${{ steps.aws.outputs.session_token }}"
         # export AWS_REGION="${{ inputs.aws_region }}"
 
+        echo "=== env ==="
+        env | grep AWS
+        echo "=== config ==="
+
         aws configure list
         echo "=== Verifying assumed role identity ==="
 
