@@ -73,7 +73,7 @@ runs:
         role-session-name: "github"
         role-skip-session-tagging	: true
         role-duration-seconds: "${{ inputs.role-duration-seconds }}"
-        mask-aws-account-id: true
+        mask-aws-account-id: false
 
 
     # - name: Test AWS CLI directly
