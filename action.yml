@@ -8,8 +8,11 @@ inputs:
   service:
     description: "Service to deploy"
     required: true
-  environment:
-    description: "Environment to deploy to"
+  cluster:
+    description: "Cluster to deploy to"
+    required: true
+  aws_account:
+    description: "AWS account to deploy to"
     required: true
   aws_access_key_id:
     required: true
@@ -40,35 +43,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Compute aws_account cluster based on environment
-      id: names
-      shell: bash
-      run: |
-        case "${{ inputs.environment }}" in
-          development)
-            cluster="dev-webservices"
-            aws_account="312759045859"
-            ;;
-          staging)
-            cluster="staging-webservices"
-            aws_account="103467854083"
-            ;;
-          sandbox)
-            cluster="sandbox-webservices"
-            aws_account="377785130582"
-            ;;
-          production)
-            cluster="production-webservices"
-            aws_account="950754345196"
-            ;;
-          dr)
-            cluster="dr-webservices"
-            aws_account="950754345196"
-            ;;
-        esac
-        echo "cluster=${cluster}" >> $GITHUB_OUTPUT
-        echo "aws_account=${aws_account}" >> "$GITHUB_OUTPUT"
-
     - name: Configure AWS credentials
       id: aws
       uses: aws-actions/configure-aws-credentials@v4.1.0
@@ -76,7 +50,7 @@ runs:
         aws-access-key-id: ${{ inputs.aws_access_key_id }}
         aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
         aws-region: ${{ inputs.aws_region }}
-        role-to-assume: "arn:aws:iam::${{ steps.names.outputs.aws_account  }}:role/${{ inputs.aws_role }}"
+        role-to-assume: "arn:aws:iam::${{ inputs.aws_account  }}:role/${{ inputs.aws_role }}"
         role-skip-session-tagging	: true
         role-duration-seconds: "${{ inputs.role-duration-seconds }}"
 
@@ -85,6 +59,6 @@ runs:
       with:
         task-definition: ${{ inputs.task-definition }}
         service: ${{ inputs.service }}
-        cluster: "${{ steps.names.outputs.cluster }}"
+        cluster: "${{ inputs.cluster }}"
         wait-for-service-stability: ${{ inputs.wait-for-service-stability }}
         force-new-deployment: ${{ inputs.force-new-deployment }}
