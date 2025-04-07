@@ -8,8 +8,11 @@ inputs:
   service:
     description: "Service to deploy"
     required: true
-  environment:
-    description: "Environment to deploy to"
+  cluster:
+    description: "Cluster to deploy to"
+    required: true
+  aws_account:
+    description: "AWS account to deploy to"
     required: true
   aws_access_key_id:
     required: true
@@ -19,9 +22,6 @@ inputs:
     description: AWS secret key
   aws_role:
     description: "AWS role to use"
-    required: true
-  aws_account:
-    description: "AWS account to deploy to"
     required: true
   aws_region:
     description: "AWS region to use"
